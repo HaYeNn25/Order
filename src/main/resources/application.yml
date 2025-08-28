@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: ${SPRING_DATA_SOURCE_URL:jdbc:mysql://localhost:3306/shopapp?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    #url: jdbc:mysql://localhost:3306/ShopApp?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  redis:
+    host: ${REDIS_HOST:localhost} #Default to 'localhost' if not provided
+    port: ${REDIS_PORT:6379}      #Default to 6379 if not provided
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+    default-cocale: en
+  flyway:
+    locations: classpath:/db/migration,classpath:/dev/db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    enabled: false
+  liquibase:
+    change-log: classpath:/db/changelog/app-changelog.xml
+    default-schema: shopapp
+api:
+  prefix: /api/v1
+jwt:
+  expiration: 2592000 #30day = 30 * 24 * 60 * 60
+  secretKey: Eet66s+5bMK8HOukopC/Kcl112IwhqbcloYugRi37b0=
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+  show-actuator: true
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /api/v1/actuator
+      exposure:
+        include: "health"

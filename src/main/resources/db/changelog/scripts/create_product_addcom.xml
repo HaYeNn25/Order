@@ -1,0 +1,41 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+http://www.liquibase.org/xml/ns/dbchangelog
+https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet  author="liquibase-docs"  id="sql-example">
+        <sql dbms="mysql"
+             splitStatements="true"
+             stripComments="true">
+            DELIMITER
+
+            CREATE OR REPLACE PROCEDURE AddColumnIfNotExists(
+            IN p_tableName VARCHAR(255),
+            IN p_columnName VARCHAR(255),
+            IN p_columnDefinition VARCHAR(255)
+            )
+            BEGIN
+            -- Check if the column exists in the specified table
+            IF NOT EXISTS (
+            SELECT 1
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = DATABASE() -- Use DATABASE() for the current database
+            AND TABLE_NAME = p_tableName
+            AND COLUMN_NAME = p_columnName
+            ) THEN
+            -- If the column does not exist, construct and execute the ALTER TABLE statement
+            SET @sql = CONCAT('ALTER TABLE `', p_tableName, '` ADD COLUMN `', p_columnName, '` ', p_columnDefinition);
+            PREPARE stmt FROM @sql;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
+            END IF;
+            END;
+
+            DELIMITER ;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
