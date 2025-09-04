@@ -7,8 +7,10 @@ import com.example.demo.dtos.UserDTO;
 import com.example.demo.exceptions.DataNotFoundException;
 import com.example.demo.exceptions.PermissionDenyException;
 import com.example.demo.models.Role;
+import com.example.demo.models.Token;
 import com.example.demo.models.User;
 import com.example.demo.repositories.RoleRepository;
+import com.example.demo.repositories.TokenRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.untils.MessageKeys;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class UserService implements  IUserService{
     private final JwtTokenUtils jwtTokenUtils;
     private final AuthenticationManager authenticationManager;
     private final LocalizationUtils localizationUtils;
+    private final TokenRepository tokenRepository;
 
     @Override
     public User createUser(UserDTO userDTO) throws Exception {
@@ -152,5 +155,11 @@ public class UserService implements  IUserService{
         //existingUser.setRole(updatedRole);
         // Save the updated user
         return userRepository.save(existingUser);
+    }
+
+    @Override
+    public User getUserDetailsFromRefreshToken(String refreshToken) throws Exception {
+        Token existingToken = tokenRepository.findByRefreshToken(refreshToken);
+        return getUserDetailsFromToken(existingToken.getToken());
     }
 }

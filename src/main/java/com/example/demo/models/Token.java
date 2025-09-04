@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "token")
+@Table(name = "tokens")
 public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +32,13 @@ public class Token {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(name = "is_mobile", columnDefinition = "TINYINT(1)")
+    private boolean isMobile;
+
+    @Column(name = "refresh_token", length = 255)
+    private String refreshToken;
+
+    @Column(name = "refresh_expiration_date")
+    private LocalDateTime refreshExpirationDate;
 }

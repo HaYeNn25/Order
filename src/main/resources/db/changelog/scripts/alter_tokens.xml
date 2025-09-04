@@ -5,8 +5,11 @@
 https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
 http://www.liquibase.org/xml/ns/dbchangelog
 https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <include file="db/changelog/scripts/create_product_addcom.xml"/>
-    <include file="db/changelog/scripts/alter_products_available.xml"/>
-    <include file="db/changelog/scripts/update_products_available.xml"/>
-    <include file="db/changelog/scripts/alter_tokens.xml"/>
+    <changeSet id="alter_tokens" author="hoanganh">
+        <sql>
+            CALL AddColumnIfNotExists('tokens', 'is_mobile', 'TINYINT(1)');
+            CALL AddColumnIfNotExists('tokens', 'refresh_token', 'VARCHAR(255)');
+            CALL AddColumnIfNotExists('tokens', 'refresh_expiration_date', 'datetime');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
